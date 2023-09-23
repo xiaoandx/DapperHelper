@@ -38,8 +38,7 @@
 
 ​		测试DapperHelper类库，可以新建一个【.Net WebApi】项目，通过在项目中引入DapperHelper类库即可使用该类库提供的方法，图2.1.1
 
-![](images/image1.png){width="5.756944444444445in"
-height="2.467361111111111in"}
+![](images/image1.png)
 
 <p style="text-align:center">图 2.1.1 新建WebApi项目</p>
 
@@ -47,29 +46,25 @@ height="2.467361111111111in"}
 
 ​		①打开项目根目录添加新目录Lib，该目录用于类库Dll存放，图2.1.2；
 
-![](images/image2.png){width="5.761111111111111in"
-height="3.0305555555555554in"}
+![](images/image2.png)
 
 <p style="text-align:center">图 2.1.2 新建Lib目录</p>
 
 ​		②复制DapperHelper类库dll及其依赖dll到新建的Lib目录中，图2.1.3；
 
-![](images/image3.png){width="5.761111111111111in"
-height="1.4097222222222223in"}
+![](images/image3.png)
 
 <p style="text-align:center">图 2.1.3 复制DapperHelper类库到指定目录</p>
 
 ​		③在WebApi项目中添加复制到Lib目录下的DapperHelper及其依赖dll到项目中。操作步骤为，展开项目【引用】；并鼠标点击【引用】；点击成功后鼠标右键即可弹出菜单，图2.1.4；
 
-![](images/image4.png){width="5.7659722222222225in"
-height="1.226388888888889in"}
+![](images/image4.png)
 
 <p style="text-align:center">图 2.1.4 项目添加引用</p>
 
 ​		④填出添加依赖框后，选择【浏览】模块，选择后点击右下侧的【选择】按钮即可打开文件选择器；在打开文件选择器并打开项目中新建的Lib文件夹；打开文件夹后通过Ctrl多选DapperHelper类库dll及其依赖dll，图2.1.5；
 
-![](images/image5.png){width="5.758333333333334in"
-height="2.765277777777778in"}
+![](images/image5.png)
 
 <p style="text-align:center">图 2.1.5 添加引入Lib中的dll依赖</p>
 
@@ -77,14 +72,13 @@ height="2.765277777777778in"}
 
 ​	DapperHelper是针对Orcale数据库进行访问操作，修改WebApi配置文件主要是添加数据库连接字符串，图2.1.6。
 
-![](images/image6.png){width="5.75625in" height="1.645138888888889in"}
+![](images/image6.png)
 
 <p style="text-align:center">图 2.1.6 配置文件中添加数据库连接字符串</p>
 
 ​		添加连接地址字符串后，还需要注意【[Oracle.ManagedDataAccess.dll]】依赖版本与Web.config中指定的【Oracle.ManagedDataAccess.Client】配置中的版本一致，图2.1.7。
 
-![](images/image7.png){width="5.754861111111111in"
-height="2.338888888888889in"}
+![](images/image7.png)
 
 <p style="text-align:center">图 2.1.7 确认dll版本与配置版本</p>
 
@@ -92,8 +86,7 @@ height="2.338888888888889in"}
 
 ​	在WebApi项目中新建Controller，新建完成后添加一个Action接口。新建接口后创建DapperService，并通过接口Action调用Service中的测试方法，图2.2.1。
 
-![](images/image8.png){width="5.756944444444445in"
-height="2.2055555555555557in"}
+![](images/image8.png)
 
 <p style="text-align:center">图 2.2.1 新建类库测试类</p>
 
@@ -111,11 +104,9 @@ DataTable dt = new  DapperRepository(DBProvider.MESCon).Query_DataTable(sql);
 
 ​	启动WebApi接口程序，启动成功后通过接口测试工具调用新建测Action接口测试是否执行成功，并相应对于查询数据，图2.2.1。
 
-![](images/image9.png){width="5.228472222222222in"
-height="1.4701388888888889in"}
+![](images/image9.png)
 
-![](images/image10.png){width="5.759027777777778in"
-height="1.4979166666666666in"}
+![](images/image10.png)
 
 <p style="text-align:center">图 2.2.1 启动WebApi程序并测试</p>
 
