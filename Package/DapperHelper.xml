@@ -412,6 +412,31 @@
             </summary>
             <typeparam name="TEntity">仓储实体</typeparam>
         </member>
+        <member name="M:DapperHelper.DapperRepository`1.#ctor">
+            <summary>
+            默认连接对象进行创建Connection对象
+            </summary>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.#ctor(DapperHelper.Core.Repositories.DBProvider)">
+            <summary>
+            指定DBProvider进行创建Connection对象
+            <para>
+            DBProvider(MESCon,InterfaceDB,MESLogCon,MESOtherCon)
+            </para>
+            </summary>
+            <param name="providers"></param>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.#ctor(System.Data.IDbConnection)">
+            <summary>
+            指定dbConnection进行创建Connection对象
+            </summary>
+            <param name="dbConnection"></param>
+        </member>
+        <member name="P:DapperHelper.DapperRepository`1.Connection">
+            <summary>
+            DB Connection
+            </summary>
+        </member>
         <member name="M:DapperHelper.DapperRepository`1.OpenConnection(System.Data.IDbConnection)">
             <summary>
             打开数据库连接,如果关闭或者连接中断,则打开连接
@@ -441,6 +466,144 @@
             创建并返回一个与该连接相关联的 Command 对象
             </summary>
             <returns>一个与该连接相关联的 Command 对象</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.Query_DataTable(System.String,System.Object,System.Data.IDbTransaction,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Dapper 执行SQL返回DataTable类型
+            </summary>
+            <param name="sql"></param>
+            <param name="param"></param>
+            <param name="transaction"></param>
+            <param name="buffered"></param>
+            <param name="commandTimeout"></param>
+            <param name="commandType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.DapperExecuteBatch(System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.Object}})">
+            <summary>
+            单条SQL，多次执行（每次执行传递数据不同），该方法执行SQL采用事务控制
+            <para>
+            默认调用MesCon连接字符串
+            </para>
+            </summary>
+            <param name="sqlParamDir"></param>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.BatchExecutionForeach(System.Collections.Generic.List{System.String})">
+            <summary>
+            SQL集合批量（循环）执行
+            <para>
+            return [Row] 表示执行成功返回受影响行数；[-1] 表示执行异常（回退异常）；
+            </para>
+            </summary>
+            <param name="list">SQL集合</param>
+            <returns>执行状态</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.BatchExecutionBeginEnd(System.Collections.Generic.List{System.String})">
+            <summary>
+            SQL集合拼接为字符串采用BeginEnd执行，SQL集合中的SQL必须以[;]结尾
+            <para>
+            return [1] 表示执行成功（提交事务）；[0] 表示执行异常（回退异常），出现异常可能为SQL集合中部分SQL语句错误，或者SQL结尾未加[;]
+            </para>
+            </summary>
+            <param name="list">SQL集合</param>
+            <returns>执行状态</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.BatchExecutionForeachNTS(System.Collections.Generic.List{System.String})">
+            <summary>
+            (无事务)SQL集合批量（循环）执行
+            <para>
+            return [Row] 表示执行成功返回受影响行数；执行出现异常将转抛异常
+            </para>
+            </summary>
+            <param name="list">SQL集合</param>
+            <returns>执行完成受影响的行数</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.BatchExecutionBeginEndNTS(System.Collections.Generic.List{System.String})">
+            <summary>
+            (无事务)SQL集合拼接为字符串采用BeginEnd执行，SQL集合中的SQL必须以[;]结尾
+            <para>
+            return [1] 表示执行成功；执行异常将抛出异常信息
+            </para>
+            </summary>
+            <param name="list">SQL集合</param>
+            <returns>执行状态</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.BatchExecutionForeachAsync(System.Collections.Generic.List{System.String})">
+            <summary>
+            SQL集合批量（循环）执行
+            <para>
+            return [Row] 表示执行成功返回受影响行数；[-1] 表示执行异常（回退异常）；
+            </para>
+            </summary>
+            <param name="list">SQL集合</param>
+            <returns>执行状态</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.BatchExecutionBeginEndAsync(System.Collections.Generic.List{System.String})">
+            <summary>
+            SQL集合拼接为字符串采用BeginEnd执行，SQL集合中的SQL必须以[;]结尾
+            <para>
+            return [1] 表示执行成功（提交事务）；[0] 表示执行异常（回退异常），出现异常可能为SQL集合中部分SQL语句错误，或者SQL结尾未加[;]
+            </para>
+            </summary>
+            <param name="list">SQL集合</param>
+            <returns>执行状态</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.BatchExecutionForeachAsyncNTS(System.Collections.Generic.List{System.String})">
+            <summary>
+            (无事务)SQL集合批量（循环）执行
+            <para>
+            return [Row] 表示执行成功返回受影响行数；执行出现异常将转抛异常
+            </para>
+            </summary>
+            <param name="list">SQL集合</param>
+            <returns>执行完成受影响的行数</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.BatchExecutionBeginEndAsyncNTS(System.Collections.Generic.List{System.String})">
+            <summary>
+            (无事务)SQL集合拼接为字符串采用BeginEnd执行，SQL集合中的SQL必须以[;]结尾
+            <para>
+            return [1] 表示执行成功；执行异常将抛出异常信息
+            </para>
+            </summary>
+            <param name="list">SQL集合</param>
+            <returns>执行状态</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.ExecuteProcedure(System.String,Dapper.DynamicParameters)">
+            <summary>
+            执行存储过程
+            </summary>
+            <param name="ProcName">存储过程名称</param>
+            <param name="dynamicParameters">存储过程参数对象（包含input，output）</param>
+            <returns>执行存储过程状态</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.ExecuteSqlListAsync(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            ExecuteSqlListAsync,异步批量执行Sql List
+            </summary>
+            <param name="sqlList">SQLS对象集合</param>
+            <returns></returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.ExecuteSqlListAsyncResultRows(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            ExecuteSqlListAsyncResultRows,异步批量执行Sql List
+            </summary>
+            <param name="sqlList">SQLS对象集合</param>
+            <returns>执行结果</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.ExecuteSqlListAsyncNTS(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            (无事务)ExecuteSqlListAsync,异步批量执行Sql List，取消事务管理
+            </summary>
+            <param name="sqlList">SQLS对象集合</param>
+            <returns>执行异常会抛出对应错误异常</returns>
+        </member>
+        <member name="M:DapperHelper.DapperRepository`1.ExecuteSqlListAsyncResultRowsNTS(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            (无事务)ExecuteSqlListAsyncResultRowsNTS,异步批量执行Sql List，取消事务管理，执行成功返回受影响的行数
+            </summary>
+            <param name="sqlList">SQLS对象集合</param>
+            <returns>执行成功返回受影响的行数，执行异常会抛出对应错误异常</returns>
         </member>
         <member name="M:DapperHelper.DapperRepository`1.Get(System.Object)">
             <summary>
@@ -479,56 +642,6 @@
             <param name="traction">此次操作的事务对象</param>
             <param name="commandTimeout">执行的超时时间</param>
             <returns></returns>
-        </member>
-        <member name="M:DapperHelper.DapperRepository`1.Query_DataTable(System.String,System.Object,System.Data.IDbTransaction,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
-            <summary>
-            Dapper 执行SQL返回DataTable类型
-            </summary>
-            <param name="sql"></param>
-            <param name="param"></param>
-            <param name="transaction"></param>
-            <param name="buffered"></param>
-            <param name="commandTimeout"></param>
-            <param name="commandType"></param>
-            <returns></returns>
-        </member>
-        <member name="M:DapperHelper.DapperRepository`1.DapperExecuteBatch(System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.Object}})">
-            <summary>
-            单条SQL，多次执行（每次执行传递数据不同），该方法执行SQL采用事务控制
-            <para>
-            默认调用MesCon连接字符串
-            </para>
-            </summary>
-            <param name="sqlParamDir"></param>
-            <exception cref="T:System.Exception"></exception>
-        </member>
-        <member name="M:DapperHelper.DapperRepository`1.BatchExecutionForeach(System.Collections.Generic.List{System.String})">
-            <summary>
-            SQL集合批量（循环）执行
-            <para>
-            return [Row] 表示执行成功返回受影响行数；[-1] 表示执行异常（回退异常）；[-2]表示执行SQL集合，执行结束后，成功数不等于集合数（回退事务）
-            </para>
-            </summary>
-            <param name="list">SQL集合</param>
-            <returns>执行状态</returns>
-        </member>
-        <member name="M:DapperHelper.DapperRepository`1.BatchExecutionBeginEnd(System.Collections.Generic.List{System.String})">
-            <summary>
-            SQL集合拼接为字符串采用BeginEnd执行，SQL集合中的SQL必须以[;]结尾
-            <para>
-            return [1] 表示执行成功（提交事务）；[0] 表示执行异常（回退异常），出现异常可能为SQL集合中部分SQL语句错误，或者SQL结尾未加[;]
-            </para>
-            </summary>
-            <param name="list">SQL集合</param>
-            <returns>执行状态</returns>
-        </member>
-        <member name="M:DapperHelper.DapperRepository`1.ExecuteProcedure(System.String,Dapper.DynamicParameters)">
-            <summary>
-            执行存储过程
-            </summary>
-            <param name="ProcName">存储过程名称</param>
-            <param name="dynamicParameters">存储过程参数对象（包含input，output）</param>
-            <returns>执行存储过程状态</returns>
         </member>
         <member name="M:DapperHelper.DapperRepository`1.QueryIn(System.String,System.Object,System.Data.IDbTransaction,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
             <summary>
