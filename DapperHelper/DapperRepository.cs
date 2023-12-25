@@ -37,6 +37,15 @@ namespace DapperHelper
         }
 
         /// <summary>
+        /// 指定数据库连接地址进行创建Connection对象
+        /// </summary>
+        /// <param name="settingConnectionString">配置文件中的数据库连接地址</param>
+        public DapperRepository(string settingConnectionString)
+        {
+            this.Connection = DBFactory.CreateConnection(settingConnectionString);
+        }
+
+        /// <summary>
         /// 指定dbConnection进行创建Connection对象
         /// </summary>
         /// <param name="dbConnection"></param>

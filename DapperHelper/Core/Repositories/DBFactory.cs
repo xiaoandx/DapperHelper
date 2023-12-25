@@ -22,6 +22,24 @@ namespace DapperHelper.Core.Repositories
             return connection;
         }
 
+        public static IDbConnection CreateConnection(string settingConnectionString)
+        {
+            if (string.IsNullOrEmpty(settingConnectionString))
+                throw new System.Exception("Database connection string cannot be empty (or does not exist)!");
+            IDbConnection connection = null;
+            //获取连接字符串
+            string connectionString = settingConnectionString;
+
+            try
+            {
+                connection = new OracleConnection(connectionString);
+            } catch (System.Exception e)
+            {
+                throw new System.Exception("Database connection address does not meet requirements, please check connection address!");
+            }
+            return connection;
+        }
+
         //public static IDbConnection CreateConnection(DBProvider providers, DBType dBType)
         //{
         //    IDbConnection connection = null;
