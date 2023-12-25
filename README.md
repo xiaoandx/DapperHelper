@@ -154,6 +154,14 @@ new DapperRepository<object>(DBProvider.InterfaceDB)
 MESCon, InterfaceDB, MESLogCon, MESOtherCon
 ```
 
+​		DapperHelper新增直接通过连接地址字符串构建连接对象
+
+```C#
+string connectString = @"Data Source=127.0.0.1/ORCL;User ID=mesdb;Password=Cam1star";
+DapperRepository dapperRepository = 
+new DapperRepository<object>(connectString)
+```
+
 
 
 # 第4章 DapperHelper主要方法
