@@ -426,6 +426,12 @@
             </summary>
             <param name="providers"></param>
         </member>
+        <member name="M:DapperHelper.DapperRepository`1.#ctor(System.String)">
+            <summary>
+            指定数据库连接地址进行创建Connection对象
+            </summary>
+            <param name="settingConnectionString">配置文件中的数据库连接地址</param>
+        </member>
         <member name="M:DapperHelper.DapperRepository`1.#ctor(System.Data.IDbConnection)">
             <summary>
             指定dbConnection进行创建Connection对象
