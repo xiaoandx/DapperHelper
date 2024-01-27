@@ -166,7 +166,7 @@ new DapperRepository<object>(connectString)
 
 # 第4章 DapperHelper主要方法
 
-## 4.1 Query_DataTable {#query_datatable .unnumbered}
+## 4.1 Query_DataTable
 
 ​	查询数据并以DataTable对象返回
 
@@ -174,7 +174,7 @@ new DapperRepository<object>(connectString)
 DataTable dt = new DapperRepository<object>().Query_DataTable(sql);
 ```
 
-## 4.2 Query {#query .unnumbered}
+## 4.2 Query 
 
 ①查询数据返回具体实体对象
 
@@ -232,7 +232,7 @@ List<string> SQLList = new List<string>() { sql, sql2, sql3 };
 int executResult = new DapperRepository<object>().BatchExecutionBeginEnd(SQLList);
 ```
 
-## 4.6 ExecuteProcedure {#executeprocedure .unnumbered}
+## 4.6 ExecuteProcedure
 
 ​		**DapperHelper**调用存储过程并执行，可以调用【**ExecuteProcedure**】方法。
 
@@ -342,7 +342,7 @@ DataTable dt = new DapperRepository<object>().Query_DataTable(sql, new { Contain
 
 
 
-## 5.5 Other {#other-1 .unnumbered}
+## 5.5 Other 
 
 ​		其他SQL传参数方法需要在使用中探索\...\...
 
