@@ -360,7 +360,7 @@ DataTable dt = new DapperRepository<object>().Query_DataTable(sql, new { Contain
 
 ## 6.2 类库包下载地址
 
-工具类【Giee】下载地址 [DapperHelper_package_1.0.0.0](https://gitee.com/XIAOANDX/dapper-helper/releases/download/1.0.0.0/DapperHelper_Pageage_1.0.0.0.zip)
+工具类 dll 下载地址 [DapperHelper.Orcale Framework 4.7.2 1.2.2.0](https://gitee.com/XIAOANDX/dapper-helper/releases/tag/v1.2.2.0)
 
 
 
