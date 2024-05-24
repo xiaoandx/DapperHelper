@@ -181,6 +181,55 @@ namespace DapperHelper
         }
 
         /// <summary>
+        /// 单条SQL，多次执行（每次执行传递数据不同），该方法执行SQL采用事务控制
+        /// <para>
+        /// 默认调用MesCon连接字符串
+        /// </para>
+        /// <para>
+        /// 该方法执行出现错误，可以通过Out返回错误信息
+        /// </para>
+        /// </summary>
+        /// <param name="sqlParamDir"></param>
+        /// <param name="errorMsg"></param>
+        /// <exception cref="Exception"></exception>
+        public void DapperExecuteBatch(Dictionary<string, List<object>> sqlParamDir, out string errorMsg)
+        {
+            using (var trans = Connection.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var sqlParam in sqlParamDir)
+                    {
+                        string sql = sqlParam.Key;
+                        //判断SQL结尾是否有分号【;】，存在分号就将其裁切掉
+                        if (sql.EndsWith(";"))
+                        {
+                            sql = sql.Substring(0, sql.Length - 1);
+                        }
+                        if (sqlParam.Value.Count > 0)
+                        {
+                            sqlParam.Value.ForEach(param =>
+                            {
+                                Connection.Execute(sql, param, trans);
+                            });
+                        } else
+                        {
+                            Connection.Execute(sql, trans);
+                        }
+                    }
+                    trans.Commit();
+
+                    errorMsg = string.Empty;
+                } catch (Exception ex)
+                {
+                    trans.Rollback();
+                    errorMsg = ex.Message;
+                    throw new Exception(ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
         /// SQL集合批量（循环）执行
         /// <para>
         /// return [Row] 表示执行成功返回受影响行数；[-1] 表示执行异常（回退异常）；
@@ -223,6 +272,55 @@ namespace DapperHelper
         }
 
         /// <summary>
+        /// SQL集合批量（循环）执行
+        /// <para>
+        /// return [Row] 表示执行成功返回受影响行数；[-1] 表示执行异常（回退异常）；
+        /// </para>
+        /// <para>
+        /// 该方法执行出现错误，可以通过Out返回错误信息
+        /// </para>
+        /// </summary>
+        /// <param name="list">SQL集合</param>
+        /// <param name="errorMsg">异常内容</param>
+        /// <returns>执行状态</returns>
+        public int BatchExecutionForeach(List<string> list, out string errorMsg)
+        {
+            int ExecutionRow = 0;
+            Connection.Open();
+            using (var transation = this.Connection.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var item in list)
+                    {
+                        string sqlOriginal = item.Trim();
+                        // 确保SQL不以【;】结尾
+                        if (sqlOriginal.EndsWith(";") || sqlOriginal.EndsWith("；"))
+                        {
+                            sqlOriginal = sqlOriginal.Substring(0, sqlOriginal.Length - 1);
+                        }
+                        int ResultRow = this.Connection.Execute(sqlOriginal, transaction: transation);
+                        if (ResultRow == 1)
+                        {
+                            ExecutionRow += ResultRow;
+                        }
+                    }
+                    transation.Commit();
+
+                    errorMsg = string.Empty;
+                    return ExecutionRow;
+                } catch (Exception ex)
+                {
+                    transation.Rollback();
+
+                    errorMsg = ex.Message;
+                    ExecutionRow = -1;
+                }
+            }
+            return ExecutionRow;
+        }
+
+        /// <summary>
         /// SQL集合拼接为字符串采用BeginEnd执行，SQL集合中的SQL必须以[;]结尾
         /// <para>
         /// return [1] 表示执行成功（提交事务）；[0] 表示执行异常（回退异常），出现异常可能为SQL集合中部分SQL语句错误，或者SQL结尾未加[;]
@@ -257,6 +355,55 @@ namespace DapperHelper
                 } catch (Exception ex)
                 {
                     transation.Rollback();
+                    ExecutionRow = 0;
+                }
+            }
+            return ExecutionRow;
+        }
+
+        /// <summary>
+        /// SQL集合拼接为字符串采用BeginEnd执行，SQL集合中的SQL必须以[;]结尾
+        /// <para>
+        /// return [1] 表示执行成功（提交事务）；[0] 表示执行异常（回退异常），出现异常可能为SQL集合中部分SQL语句错误，或者SQL结尾未加[;]
+        /// </para>
+        /// <para>
+        /// 该方法执行出现错误，可以通过Out返回错误信息
+        /// </para>
+        /// </summary>
+        /// <param name="list">SQL集合</param>
+        /// <param name="errorMsg">异常错误信息</param>
+        /// <returns>执行状态</returns>
+        public int BatchExecutionBeginEnd(List<string> list, out string errorMsg)
+        {
+            int ExecutionRow = 1;
+            Connection.Open();
+            using (var transation = this.Connection.BeginTransaction())
+            {
+                try
+                {
+                    string sql = $@"begin
+";
+                    foreach (string item in list)
+                    {
+                        string tempSql = item;
+                        if (!tempSql.EndsWith(";"))
+                        {
+                            tempSql += ";";
+                        }
+                        sql += tempSql + "\r\n";
+                    }
+                    sql += "end;";
+
+                    int result = Connection.Execute(sql, transaction: transation);
+                    transation.Commit();
+
+                    errorMsg = string.Empty;
+                    return ExecutionRow;
+                } catch (Exception ex)
+                {
+                    transation.Rollback();
+
+                    errorMsg = ex.Message;
                     ExecutionRow = 0;
                 }
             }
@@ -498,6 +645,40 @@ namespace DapperHelper
                 catch (Exception ex)
                 {
                     transaction.Rollback();
+                    ExecutionStatus = 0;
+                }
+            }
+            return ExecutionStatus;
+        }
+
+        /// <summary>
+        /// 执行存储过程
+        /// <para>
+        /// 该方法执行出现错误，可以通过Out返回错误信息
+        /// </para>
+        /// </summary>
+        /// <param name="ProcName">存储过程名称</param>
+        /// <param name="dynamicParameters">存储过程参数对象（包含input，output）</param>
+        /// <param name="errorMsg"></param>
+        /// <returns>执行存储过程状态</returns>
+        public int ExecuteProcedure(string ProcName, DynamicParameters dynamicParameters, out string errorMsg)
+        {
+            int ExecutionStatus = 1;
+            Connection.Open();
+            using (var transaction = this.Connection.BeginTransaction())
+            {
+                try
+                {
+                    int result = Connection.Execute(ProcName, dynamicParameters, commandType: CommandType.StoredProcedure);
+                    transaction.Commit();
+
+                    errorMsg = string.Empty;
+                    return ExecutionStatus;
+                } catch (Exception ex)
+                {
+                    transaction.Rollback();
+
+                    errorMsg = ex.Message;
                     ExecutionStatus = 0;
                 }
             }
