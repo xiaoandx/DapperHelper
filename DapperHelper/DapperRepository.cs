@@ -355,7 +355,7 @@ namespace DapperHelper
                             sqlOriginal = sqlOriginal.Substring(0, sqlOriginal.Length - 1);
                         }
                         int ResultRow = this.Connection.Execute(sqlOriginal, transaction:transation);
-                        if (ResultRow == 1)
+                        if (ResultRow >= 0)
                         {
                             ExecutionRow += ResultRow;
                         }
@@ -401,7 +401,7 @@ namespace DapperHelper
                             sqlOriginal = sqlOriginal.Substring(0, sqlOriginal.Length - 1);
                         }
                         int ResultRow = this.Connection.Execute(sqlOriginal, transaction: transation);
-                        if (ResultRow == 1)
+                        if (ResultRow >= 0)
                         {
                             ExecutionRow += ResultRow;
                         }
