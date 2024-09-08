@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DapperHelper
+namespace DapperHelper.Extensions
 {
-    public static class ListEx
+    /// <summary>
+    /// List集合扩展方法
+    /// </summary>
+    public static class ListExtensions
     {
         /// <summary>
         /// List集合如果Count等于零，则添加一个默认类型的Item，避免包含IN关键字SQL执行异常
@@ -45,7 +46,7 @@ namespace DapperHelper
                 return data;
             } catch (Exception e)
             {
-                throw new FormatException("Parameter collection type does not match. Please check collection type.");
+                throw new FormatException("Parameter collection type does not match. Please check collection type.", e);
             }
         }
 

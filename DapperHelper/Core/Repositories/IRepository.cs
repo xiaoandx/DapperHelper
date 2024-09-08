@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DapperHelper.Core.Repositories
 {
+    /// <summary>
+    /// 仓储接口
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     public interface IRepository<TEntity> where TEntity : class, new()
     {
 
@@ -62,7 +63,6 @@ namespace DapperHelper.Core.Repositories
         /// <summary>
         /// 根据主键获取实体数据
         /// </summary>
-        /// <typeparam name="TEntity">仓储实体</typeparam>
         /// <param name="key">主键值</param>
         /// <param name="traction">此次操作的事务对象</param>
         /// <param name="commandTimeout">执行的超时时间</param>
@@ -100,7 +100,6 @@ namespace DapperHelper.Core.Repositories
         /// <summary>
         /// 获取所有数据
         /// </summary>
-        /// <typeparam name="TEntity">实体类型</typeparam>
         /// <param name="traction">此次操作的事务对象</param>
         /// <param name="commandTimeout">执行的超时时间</param>
         /// <returns></returns>
@@ -140,7 +139,6 @@ namespace DapperHelper.Core.Repositories
         /// <summary>
         /// 新增实体数据
         /// </summary>
-        /// <typeparam name="TEntity">实体类型</typeparam>
         /// <param name="entityToInsert">实体对象</param>
         /// <param name="traction">此次操作的事务对象</param>
         /// <param name="commandTimeout">执行的超时时间</param>
@@ -185,7 +183,6 @@ namespace DapperHelper.Core.Repositories
         /// <summary>
         /// 修改实体数据
         /// </summary>
-        /// <typeparam name="TEntity">实体类型</typeparam>
         /// <param name="entityToUpdate">实体对象</param>
         /// <param name="traction">此次操作的事务对象</param>
         /// <param name="commandTimeout">执行的超时时间</param>
@@ -294,7 +291,6 @@ namespace DapperHelper.Core.Repositories
         /// <summary>
         /// 查询数据,返回指定数据类型
         /// </summary>
-        /// <typeparam name="TEntity">返回数据的类型</typeparam>
         /// <param name="sql">sql语句</param>
         /// <param name="param">sql参数对象</param>
         /// <param name="transaction">此次操作的事务对象</param>
@@ -307,7 +303,6 @@ namespace DapperHelper.Core.Repositories
         /// <summary>
         /// 查询数据,返回指定数据类型
         /// </summary>
-        /// <typeparam name="TEntity">返回数据的类型</typeparam>
         /// <param name="sql">sql语句</param>
         /// <param name="param">sql参数对象</param>
         /// <param name="transaction">此次操作的事务对象</param>

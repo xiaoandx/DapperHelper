@@ -1,11 +1,12 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
+using DapperHelper.Core.Enum;
+using DapperHelper.Core.Extensions;
 using DapperHelper.Core.Repositories;
+using DapperHelper.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DapperHelper
@@ -130,6 +131,7 @@ namespace DapperHelper
         /// <param name="commandTimeout"></param>
         /// <param name="commandType"></param>
         /// <returns></returns>
+        [Obsolete("该函数已弃用，请使用QueryDataTable函数替代")]
         public DataTable Query_DataTable(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
         {
             IDataReader d = Connection.ExecuteReader(sql, param, transaction, commandTimeout, commandType);
@@ -148,9 +150,10 @@ namespace DapperHelper
         /// <param name="commandTimeout"></param>
         /// <param name="commandType"></param>
         /// <returns></returns>
+        [Obsolete("该函数已弃用，请使用QueryDataTableIn函数替代")]
         public DataTable Query_DataTableIn(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
         {
-            ListEx.ParamIsListEmpty(ref param);
+            ListExtensions.ParamIsListEmpty(ref param);
             IDataReader d = Connection.ExecuteReader(sql, param, transaction, commandTimeout, commandType);
             DataTable dt = new DataTable();
             dt.Load(d);
@@ -187,11 +190,87 @@ namespace DapperHelper
         /// <returns></returns>
         public DataTable QueryDataTableIn(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
         {
-            ListEx.ParamIsListEmpty(ref param);
+            ListExtensions.ParamIsListEmpty(ref param);
             IDataReader d = Connection.ExecuteReader(sql, param, transaction, commandTimeout, commandType);
             DataTable dt = new DataTable();
             dt.Load(d);
             return dt;
+        }
+
+        /// <summary>
+        /// Dapper 执行SQL返回DataTable第First行数据
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="buffered"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        [Obsolete("该函数已弃用，请使用QueryDataTableFirstRow函数替代")]
+        public DataRow Query_DataTableFirstRow(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            IDataReader d = Connection.ExecuteReader(sql, param, transaction, commandTimeout, commandType);
+            DataTable dt = new DataTable();
+            dt.Load(d);
+            return dt.FirstRow();
+        }
+
+        /// <summary>
+        /// Query_DataTableIn 执行SQL返回DataTable类型,该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="buffered"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        [Obsolete("该函数已弃用，请使用QueryDataTableInFirstRow函数替代")]
+        public DataRow Query_DataTableInFirstRow(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            ListExtensions.ParamIsListEmpty(ref param);
+            IDataReader d = Connection.ExecuteReader(sql, param, transaction, commandTimeout, commandType);
+            DataTable dt = new DataTable();
+            dt.Load(d);
+            return dt.FirstRow();
+        }
+
+        /// <summary>
+        /// Dapper 执行SQL返回DataTable类型
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="buffered"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public DataRow QueryDataTableFirstRow(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            IDataReader d = Connection.ExecuteReader(sql, param, transaction, commandTimeout, commandType);
+            DataTable dt = new DataTable();
+            dt.Load(d);
+            return dt.FirstRow();
+        }
+
+        /// <summary>
+        /// QueryDataTableIn 执行SQL返回DataTable类型,该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="buffered"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public DataRow QueryDataTableInFirstRow(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            ListExtensions.ParamIsListEmpty(ref param);
+            IDataReader d = Connection.ExecuteReader(sql, param, transaction, commandTimeout, commandType);
+            DataTable dt = new DataTable();
+            dt.Load(d);
+            return dt.FirstRow();
         }
 
         /// <summary>
@@ -210,7 +289,7 @@ namespace DapperHelper
             DataTable dt = new DataTable();
             dt.Load(d);
 
-            if(dt != null && dt.Rows.Count > 0)
+            if (dt != null && dt.Rows.Count > 0)
                 return Convert.ToString(dt.Rows[0][0]);
             else
                 return null;
@@ -228,7 +307,7 @@ namespace DapperHelper
         /// <returns></returns>
         public string QueryStringIn(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
         {
-            ListEx.ParamIsListEmpty(ref param);
+            ListExtensions.ParamIsListEmpty(ref param);
             IDataReader d = Connection.ExecuteReader(sql, param, transaction, commandTimeout, commandType);
             DataTable dt = new DataTable();
             dt.Load(d);
@@ -354,7 +433,7 @@ namespace DapperHelper
                         {
                             sqlOriginal = sqlOriginal.Substring(0, sqlOriginal.Length - 1);
                         }
-                        int ResultRow = this.Connection.Execute(sqlOriginal, transaction:transation);
+                        int ResultRow = this.Connection.Execute(sqlOriginal, transaction: transation);
                         if (ResultRow >= 0)
                         {
                             ExecutionRow += ResultRow;
@@ -362,8 +441,7 @@ namespace DapperHelper
                     }
                     transation.Commit();
                     return ExecutionRow;
-                }
-                catch (Exception ex)
+                } catch (Exception ex)
                 {
                     transation.Rollback();
                     ExecutionRow = -1;
@@ -387,6 +465,7 @@ namespace DapperHelper
         public int BatchExecutionForeach(List<string> list, out string errorMsg)
         {
             int ExecutionRow = 0;
+            string execultSQL = string.Empty;
             Connection.Open();
             using (var transation = this.Connection.BeginTransaction())
             {
@@ -400,6 +479,7 @@ namespace DapperHelper
                         {
                             sqlOriginal = sqlOriginal.Substring(0, sqlOriginal.Length - 1);
                         }
+                        execultSQL = sqlOriginal;
                         int ResultRow = this.Connection.Execute(sqlOriginal, transaction: transation);
                         if (ResultRow >= 0)
                         {
@@ -414,7 +494,7 @@ namespace DapperHelper
                 {
                     transation.Rollback();
 
-                    errorMsg = ex.Message;
+                    errorMsg = ex.Message + $"exception sql[{execultSQL}]";
                     ExecutionRow = -1;
                 }
             }
@@ -534,7 +614,7 @@ namespace DapperHelper
                         sqlOriginal = sqlOriginal.Substring(0, sqlOriginal.Length - 1);
                     }
                     int ResultRow = this.Connection.Execute(sqlOriginal);
-                    if (ResultRow == 1)
+                    if (ResultRow >= 0)
                     {
                         ExecutionRow += ResultRow;
                     }
@@ -742,8 +822,7 @@ namespace DapperHelper
                     int result = Connection.Execute(ProcName, dynamicParameters, commandType: CommandType.StoredProcedure);
                     transaction.Commit();
                     return ExecutionStatus;
-                } 
-                catch (Exception ex)
+                } catch (Exception ex)
                 {
                     transaction.Rollback();
                     ExecutionStatus = 0;
@@ -809,7 +888,7 @@ namespace DapperHelper
                     transaction.Rollback();
                     throw;
                 }
-            }           
+            }
         }
 
         /// <summary>
@@ -852,7 +931,7 @@ namespace DapperHelper
             {
                 foreach (var sql in sqlList)
                 {
-                     await Connection.ExecuteAsync(sql);
+                    await Connection.ExecuteAsync(sql);
                 }
             } catch
             {
@@ -883,143 +962,9 @@ namespace DapperHelper
             }
         }
 
-        #region SQL IN 参数Empty Query方法
-
-        /// <summary>
-        /// QueryIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <param name="transaction"></param>
-        /// <param name="buffered"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="commandType"></param>
-        /// <returns></returns>
-        public IEnumerable<TEntity> QueryIn(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
-        {
-            ListEx.ParamIsListEmpty(ref param);
-            return Connection.Query<TEntity>(sql, param, transaction, buffered, commandTimeout, commandType);
-        }
-
-        /// <summary>
-        /// QueryAsyncIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <param name="transaction"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="commandType"></param>
-        /// <returns></returns>
-        public async Task<IEnumerable<TEntity>> QueryAsyncIn(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
-        {
-            ListEx.ParamIsListEmpty(ref param);
-            return await Connection.QueryAsync<TEntity>(sql, param, transaction, commandTimeout, commandType);
-        }
-
-        /// <summary>
-        /// QueryIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <param name="transaction"></param>
-        /// <param name="buffered"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="commandType"></param>
-        /// <returns></returns>
-        public IEnumerable<T> QueryIn<T>(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
-        {
-            ListEx.ParamIsListEmpty(ref param);
-            return Connection.Query<T>(sql, param, transaction, buffered, commandTimeout, commandType);
-        }
-
-        /// <summary>
-        /// QueryAsyncIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <param name="transaction"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="commandType"></param>
-        /// <returns></returns>
-        public async Task<IEnumerable<T>> QueryAsyncIn<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
-        {
-            ListEx.ParamIsListEmpty(ref param);
-            return await Connection.QueryAsync<T>(sql, param, transaction, commandTimeout, commandType);
-        }
-
-        /// <summary>
-        /// QueryFirstIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <param name="transaction"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="commandType"></param>
-        /// <returns></returns>
-        public T QueryFirstIn<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
-        {
-            ListEx.ParamIsListEmpty(ref param);
-            return Connection.QueryFirst<T>(sql, param, transaction, commandTimeout, commandType);
-        }
-
-        /// <summary>
-        /// QueryFirstAsyncIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <param name="transaction"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="commandType"></param>
-        /// <returns></returns>
-        public async Task<T> QueryFirstAsyncIn<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
-        {
-            ListEx.ParamIsListEmpty(ref param);
-            return await Connection.QueryFirstAsync<T>(sql, param, transaction, commandTimeout, commandType);
-        }
-
-        /// <summary>
-        /// QueryFirstOrDefaultIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <param name="transaction"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="commandType"></param>
-        /// <returns></returns>
-        public T QueryFirstOrDefaultIn<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
-        {
-            ListEx.ParamIsListEmpty(ref param);
-            return Connection.QueryFirstOrDefault<T>(sql, param, transaction, commandTimeout, commandType);
-        }
-
-        /// <summary>
-        /// QueryFirstOrDefaultAsyncIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <param name="transaction"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="commandType"></param>
-        /// <returns></returns>
-        public async Task<T> QueryFirstOrDefaultAsyncIn<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
-        {
-            ListEx.ParamIsListEmpty(ref param);
-            return await Connection.QueryFirstOrDefaultAsync<T>(sql, param, transaction, commandTimeout, commandType);
-        }
-
-        #endregion
-
-
         /// <summary>
         /// 根据主键获取实体数据
         /// </summary>
-        /// <typeparam name="TEntity">仓储实体</typeparam>
         /// <param name="key">主键值</param>
         /// <returns></returns>
         public virtual TEntity Get(object key)
@@ -1027,6 +972,13 @@ namespace DapperHelper
             return Get<TEntity>(key);
         }
 
+        /// <summary>
+        ///  根据主键获取实体数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="traction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <returns></returns>
         public TEntity Get(object key, IDbTransaction traction = null, int? commandTimeout = null)
         {
             return this.Get<TEntity>(key, traction, commandTimeout);
@@ -1035,7 +987,6 @@ namespace DapperHelper
         /// <summary>
         /// 根据主键获取实体数据
         /// </summary>
-        /// <typeparam name="TEntity">仓储实体</typeparam>
         /// <param name="key">主键值</param>
         /// <param name="traction">此次操作的事务对象</param>
         /// <param name="commandTimeout">执行的超时时间</param>
@@ -1071,158 +1022,516 @@ namespace DapperHelper
             return await Connection.GetAsync<T>(key, traction, commandTimeout);
         }
 
+        /// <summary>
+        /// 获取所有的实体数据
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<TEntity> GetAll()
         {
             return GetAll<TEntity>();
         }
 
+        /// <summary>
+        /// 获取所有的实体数据
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<TEntity> GetAll(IDbTransaction traction = null, int? commandTimeout = null)
         {
             return this.GetAll<TEntity>(traction, commandTimeout);
         }
 
+        /// <summary>
+        /// Async 获取所有的实体数据
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<TEntity>> GetAllAsync(IDbTransaction traction = null, int? commandTimeout = null)
         {
             return await Connection.GetAllAsync<TEntity>(traction, commandTimeout);
         }
 
+        /// <summary>
+        /// 获取所有的实体数据
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<T> GetAll<T>(IDbTransaction traction = null, int? commandTimeout = null) where T : class, new()
         {
             return Connection.GetAll<T>(traction, commandTimeout);
         }
 
+        /// <summary>
+        /// Async 获取所有的实体数据
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<T>> GetAllAsync<T>(IDbTransaction traction = null, int? commandTimeout = null) where T : class, new()
         {
             return await Connection.GetAllAsync<T>(traction, commandTimeout);
         }
 
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <param name="entityToInsert"></param>
+        /// <returns></returns>
         public bool Insert(TEntity entityToInsert)
         {
             return this.Connection.Insert<TEntity>(entityToInsert) > 0;
         }
 
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <param name="entityToInsert"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>    
+        /// <returns></returns>
         public bool Insert(TEntity entityToInsert, IDbTransaction traction = null, int? commandTimeout = null)
         {
             return this.Insert<TEntity>(entityToInsert, traction, commandTimeout) > 0;
         }
 
+        /// <summary>
+        /// Async 插入实体数据
+        /// </summary>
+        /// <param name="entityToInsert"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>    
+        /// <param name="sqlAdapter"></param>
+        /// <returns></returns>
         public async Task<bool> InsertAsync(TEntity entityToInsert, IDbTransaction traction = null, int? commandTimeout = null, ISqlAdapter sqlAdapter = null)
         {
             return await InsertAsync<TEntity>(entityToInsert, traction, commandTimeout) > 0;
         }
 
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entityToInsert"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <returns></returns>
         public long Insert<T>(T entityToInsert, IDbTransaction traction = null, int? commandTimeout = null) where T : class, new()
         {
             return Connection.Insert<T>(entityToInsert, traction, commandTimeout);
         }
 
+        /// <summary>
+        /// Async 插入实体数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entityToInsert"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="sqlAdapter"></param>
+        /// <returns></returns>
         public async Task<long> InsertAsync<T>(T entityToInsert, IDbTransaction traction = null, int? commandTimeout = null, ISqlAdapter sqlAdapter = null) where T : class, new()
         {
             return await Connection.InsertAsync<T>(entityToInsert, traction, commandTimeout, sqlAdapter);
         }
 
+        /// <summary>
+        /// 更新实体数据
+        /// </summary>
+        /// <param name="entityToUpdate"></param>
+        /// <returns></returns>
         public bool Update(TEntity entityToUpdate)
         {
             return this.Connection.Update<TEntity>(entityToUpdate);
         }
 
+        /// <summary>
+        ///  更新实体数据
+        /// </summary>
+        /// <param name="entityToUpdate"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <returns></returns>
         public bool Update(TEntity entityToUpdate, IDbTransaction traction = null, int? commandTimeout = null)
         {
             return this.Update<TEntity>(entityToUpdate, traction, commandTimeout);
         }
 
+        /// <summary>
+        /// Async 更新实体数据
+        /// </summary>
+        /// <param name="entityToUpdate"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <returns></returns>
         public async Task<bool> UpdateAsync(TEntity entityToUpdate, IDbTransaction traction = null, int? commandTimeout = null)
         {
             return await UpdateAsync<TEntity>(entityToUpdate);
         }
 
+        /// <summary>
+        /// 更新实体数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entityToUpdate"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <returns></returns>
         public bool Update<T>(T entityToUpdate, IDbTransaction traction = null, int? commandTimeout = null) where T : class, new()
         {
             return Connection.Update<T>(entityToUpdate, traction, commandTimeout);
         }
 
+        /// <summary>
+        /// Async 更新实体数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entityToUpdate"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <returns></returns>
         public async Task<bool> UpdateAsync<T>(T entityToUpdate, IDbTransaction traction = null, int? commandTimeout = null) where T : class, new()
         {
             return await Connection.UpdateAsync<T>(entityToUpdate, traction, commandTimeout);
         }
 
+        /// <summary>
+        /// 删除实体数据
+        /// </summary>
+        /// <param name="entityToDelete"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <returns></returns>
         public bool Delete(TEntity entityToDelete, IDbTransaction traction = null, int? commandTimeout = null)
         {
             return this.Delete<TEntity>(entityToDelete, traction, commandTimeout);
         }
 
+        /// <summary>
+        ///  删除实体数据
+        /// </summary>
+        /// <param name="entityToDelete"></param>
+        /// <returns></returns>
         public bool Delete(TEntity entityToDelete)
         {
             return this.Connection.Delete<TEntity>(entityToDelete);
         }
 
+        /// <summary>
+        /// 删除实体数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entityToDelete"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <returns></returns>
         public bool Delete<T>(T entityToDelete, IDbTransaction traction = null, int? commandTimeout = null) where T : class, new()
         {
             return Connection.Delete(entityToDelete, traction, commandTimeout);
         }
 
+        /// <summary>
+        /// Async 删除实体数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entityToDelete"></param>
+        /// <param name="traction">此次操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <returns></returns>
         public async Task<bool> DeleteAsync<T>(T entityToDelete, IDbTransaction traction = null, int? commandTimeout = null) where T : class, new()
         {
             return await Connection.DeleteAsync<T>(entityToDelete, traction, commandTimeout);
         }
 
+        /// <summary>
+        /// 执行原生sql
+        /// </summary>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <returns></returns>
         public int Execute(string sql, object param = null)
         {
             return Connection.Execute(sql, param);
         }
 
+        /// <summary>
+        /// Async 执行原生sql
+        /// </summary>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <returns></returns>
         public async Task<int> ExecuteAsync(string sql, object param = null)
         {
             return await Connection.ExecuteAsync(sql, param);
         }
 
+        /// <summary>
+        /// 执行原生sql
+        /// </summary>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <param name="transaction">操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
         public int Execute(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             return Connection.Execute(sql, param, transaction, commandTimeout, commandType);
         }
 
+        /// <summary>
+        /// Async 执行原生sql
+        /// </summary>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <param name="transaction">操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
         public async Task<int> ExecuteAsync(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             return await Connection.ExecuteAsync(sql, param, transaction, commandTimeout, commandType);
         }
 
+        /// <summary>
+        /// 查询  
+        /// </summary>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <param name="transaction">操作的事务对象</param>
+        /// <param name="buffered"></param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
         public IEnumerable<TEntity> Query(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
         {
             return Connection.Query<TEntity>(sql, param, transaction, buffered, commandTimeout, commandType);
         }
 
+        /// <summary>
+        /// Async 查询
+        /// </summary>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <param name="transaction">操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<TEntity>> QueryAsync(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             return await Connection.QueryAsync<TEntity>(sql, param, transaction, commandTimeout, commandType);
         }
 
+        /// <summary>
+        /// 查询并返回指定对象
+        /// </summary>
+        /// <typeparam name="T">对象</typeparam>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <param name="transaction">操作的事务对象</param>
+        /// <param name="buffered"></param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
         public IEnumerable<T> Query<T>(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
         {
             return Connection.Query<T>(sql, param, transaction, buffered, commandTimeout, commandType);
         }
 
+        /// <summary>
+        /// Async 查询并返回指定对象
+        /// </summary>
+        /// <typeparam name="T">对象</typeparam>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <param name="transaction">操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
         {
             return await Connection.QueryAsync<T>(sql, param, transaction, commandTimeout, commandType);
         }
 
+        /// <summary>
+        /// 查询并返回第一个对象  
+        /// </summary>
+        /// <typeparam name="T">对象</typeparam>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <param name="transaction">操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
         public T QueryFirst<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
         {
             return Connection.QueryFirst<T>(sql, param, transaction, commandTimeout, commandType);
         }
 
+        /// <summary>
+        /// Async 查询并返回第一个对象
+        /// </summary>
+        /// <typeparam name="T">对象</typeparam>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <param name="transaction">操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
         public async Task<T> QueryFirstAsync<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
         {
             return await Connection.QueryFirstAsync<T>(sql, param, transaction, commandTimeout, commandType);
         }
 
+        /// <summary>
+        /// 查询并返回第一个对象
+        /// </summary>
+        /// <typeparam name="T">对象</typeparam>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <param name="transaction">操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
         public T QueryFirstOrDefault<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             return Connection.QueryFirstOrDefault<T>(sql, param, transaction, commandTimeout, commandType);
         }
 
+        /// <summary>
+        /// Async 查询并返回第一个对象 
+        /// </summary>
+        /// <typeparam name="T">对象</typeparam>
+        /// <param name="sql">SQL脚本</param>
+        /// <param name="param">SQL执行参数对象</param>
+        /// <param name="transaction">操作的事务对象</param>
+        /// <param name="commandTimeout">执行的超时时间</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
         public async Task<T> QueryFirstOrDefaultAsync<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
         {
+            return await Connection.QueryFirstOrDefaultAsync<T>(sql, param, transaction, commandTimeout, commandType);
+        }
+
+        /// <summary>
+        /// QueryIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="buffered"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public IEnumerable<TEntity> QueryIn(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            ListExtensions.ParamIsListEmpty(ref param);
+            return Connection.Query<TEntity>(sql, param, transaction, buffered, commandTimeout, commandType);
+        }
+
+        /// <summary>
+        /// QueryAsyncIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<TEntity>> QueryAsyncIn(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            ListExtensions.ParamIsListEmpty(ref param);
+            return await Connection.QueryAsync<TEntity>(sql, param, transaction, commandTimeout, commandType);
+        }
+
+        /// <summary>
+        /// QueryIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="buffered"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public IEnumerable<T> QueryIn<T>(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
+        {
+            ListExtensions.ParamIsListEmpty(ref param);
+            return Connection.Query<T>(sql, param, transaction, buffered, commandTimeout, commandType);
+        }
+
+        /// <summary>
+        /// QueryAsyncIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> QueryAsyncIn<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
+        {
+            ListExtensions.ParamIsListEmpty(ref param);
+            return await Connection.QueryAsync<T>(sql, param, transaction, commandTimeout, commandType);
+        }
+
+        /// <summary>
+        /// QueryFirstIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public T QueryFirstIn<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
+        {
+            ListExtensions.ParamIsListEmpty(ref param);
+            return Connection.QueryFirst<T>(sql, param, transaction, commandTimeout, commandType);
+        }
+
+        /// <summary>
+        /// QueryFirstAsyncIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public async Task<T> QueryFirstAsyncIn<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) where T : class, new()
+        {
+            ListExtensions.ParamIsListEmpty(ref param);
+            return await Connection.QueryFirstAsync<T>(sql, param, transaction, commandTimeout, commandType);
+        }
+
+        /// <summary>
+        /// QueryFirstOrDefaultIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public T QueryFirstOrDefaultIn<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            ListExtensions.ParamIsListEmpty(ref param);
+            return Connection.QueryFirstOrDefault<T>(sql, param, transaction, commandTimeout, commandType);
+        }
+
+        /// <summary>
+        /// QueryFirstOrDefaultAsyncIn 该函数会对入参匿名对象param进行List类型检索，当包含List参数集合时避免ListCount等于零
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public async Task<T> QueryFirstOrDefaultAsyncIn<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            ListExtensions.ParamIsListEmpty(ref param);
             return await Connection.QueryFirstOrDefaultAsync<T>(sql, param, transaction, commandTimeout, commandType);
         }
 

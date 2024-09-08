@@ -1,16 +1,29 @@
-﻿using DapperHelper.Core.Utils;
+﻿using DapperHelper.Core.Enum;
+using DapperHelper.Core.Utils;
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
 
 namespace DapperHelper.Core.Repositories
 {
-    public class DBFactory
+    /// <summary>
+    /// 数据库连接工厂
+    /// </summary>
+    public static class DBFactory
     {
+        /// <summary>
+        /// 创建数据库连接
+        /// </summary>
+        /// <returns></returns>
         public static IDbConnection CreateConnection()
         {
             return CreateConnection(DBProvider.MESCon);
         }
 
+        /// <summary>
+        /// 创建数据库连接,指定数据库 <see cref="DBProvider"/>
+        /// </summary>
+        /// <param name="providers"></param>
+        /// <returns></returns>
         public static IDbConnection CreateConnection(DBProvider providers)
         {
             IDbConnection connection = null;
@@ -22,6 +35,12 @@ namespace DapperHelper.Core.Repositories
             return connection;
         }
 
+        /// <summary>
+        /// 创建数据库连接,指定数据库连接字符串
+        /// </summary>
+        /// <param name="settingConnectionString"></param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception"></exception>
         public static IDbConnection CreateConnection(string settingConnectionString)
         {
             if (string.IsNullOrEmpty(settingConnectionString))
@@ -35,7 +54,7 @@ namespace DapperHelper.Core.Repositories
                 connection = new OracleConnection(connectionString);
             } catch (System.Exception e)
             {
-                throw new System.Exception("Database connection address does not meet requirements, please check connection address!");
+                throw new System.Exception("Database connection address does not meet requirements, please check connection address!",e);
             }
             return connection;
         }
@@ -71,7 +90,11 @@ namespace DapperHelper.Core.Repositories
         //    return connection;
         //}
 
-
+        /// <summary>
+        /// 获取数据库连接字符串 
+        /// </summary>
+        /// <param name="providers"></param>
+        /// <returns></returns>
         public static string TryGetConnectionString(DBProvider providers)
         {
             var connString = string.Empty;
