@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace DapperHelper
 {
     /// <summary>
-    /// Dapper数据操作基类
+    /// Dapper数据操作基类 v1.5.2.0
     /// </summary>
     /// <typeparam name="TEntity">仓储实体</typeparam>
     public class DapperRepository<TEntity> : IRepository<TEntity> where TEntity : class, new()
