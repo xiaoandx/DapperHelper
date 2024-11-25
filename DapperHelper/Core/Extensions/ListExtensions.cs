@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DapperHelper.Extensions
+namespace DapperHelper.Core.Extensions
 {
     /// <summary>
     /// List集合扩展方法
     /// </summary>
+    /// <remarks>
+    /// Author：Willis
+    /// <para>Version: v1.6.0.0</para>
+    /// </remarks>
     public static class ListExtensions
     {
         /// <summary>

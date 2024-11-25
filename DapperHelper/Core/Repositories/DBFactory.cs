@@ -8,6 +8,10 @@ namespace DapperHelper.Core.Repositories
     /// <summary>
     /// 数据库连接工厂
     /// </summary>
+    /// <remarks>
+    /// Author：Willis
+    /// <para>Version: v1.6.0.0</para>
+    /// </remarks>
     public static class DBFactory
     {
         /// <summary>

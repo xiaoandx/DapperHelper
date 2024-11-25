@@ -3,6 +3,10 @@
     /// <summary>
     /// 数据库操作状态
     /// </summary>
+    /// <remarks>
+    /// Author：Willis
+    /// <para>Version: v1.6.0.0</para>
+    /// </remarks>
     public enum DBStatus
     {
         /// <summary>

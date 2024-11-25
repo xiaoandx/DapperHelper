@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace DapperHelper.Core.Extensions
 {
     /// <summary>
     ///  DataTable扩展方法
     /// </summary>
+    /// <remarks>
+    /// Author：Willis
+    /// <para>Version: v1.6.0.0</para>
+    /// </remarks>
     public static class DataTableExtensions
     {
         /// <summary>

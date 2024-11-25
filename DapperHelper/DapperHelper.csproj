@@ -64,8 +64,8 @@
     <Compile Include="Core\Enum\DBType.cs" />
     <Compile Include="Core\Repositories\IRepository.cs" />
     <Compile Include="Core\Utils\ConfigManager.cs" />
-    <Compile Include="DapperRepository.cs" />
     <Compile Include="Core\Extensions\ListExtensions.cs" />
+    <Compile Include="DapperConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
 namespace DapperHelper.Core.Utils
 {
     /// <summary>
     /// web.config配置获取帮助类
     /// </summary>
+    /// <remarks>
+    /// Author：Willis
+    /// <para>Version: v1.6.0.0</para>
+    /// </remarks>
     public sealed class ConfigManager
     {
         /// <summary>
