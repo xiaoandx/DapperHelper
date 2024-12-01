@@ -103,7 +103,7 @@
 ```c#
 string sql = @"SELECT C.CONTAINERNAME FROM CONTAINER C"; 
                                                             
-DataTable dt = new  DapperRepository(DBProvider.MESCon).Query_DataTable(sql);   
+DataTable dt = new  DapperHelper(DBProvider.MESCon).Query_DataTable(sql);   
 ```
 
 
@@ -127,7 +127,7 @@ DataTable dt = new  DapperRepository(DBProvider.MESCon).Query_DataTable(sql);
 ​		默认创建DapperHelper操作对象，直接在代码中添加以下代码即可完成创建。
 
 ```c#
-DapperRepository dapperRepository = new DapperRepository<object>();
+DapperHelper dapperHelper = new DapperHelper<object>();
 ```
 
 ​		使用默认创建dapperRepository操作对象需要在Web.config（App.Config）配置文件中的AppSettings标签下添加默认的数据库连接字符串
@@ -141,15 +141,15 @@ DapperRepository dapperRepository = new DapperRepository<object>();
 ​		可选不同的数据库连接地址进行创建多个数据库操作对象，该方式可以方便用户在代码中创建多个数据库操作对象，红色部分为Web.config（App.Config）中数据库连接字符串配置的Key。
 
 ```c#
-DapperRepository dapperRepository = 
-new DapperRepository<object>(DBProvider.MESCon);
+DapperHelper dapperHelper = 
+new DapperHelper<object>(DBProvider.MESCon);
 ```
 
 ​		想切换配置地址可以直接切换【DBProvider】类型即可，切换完成后需要在配置文件中添加相应Key的连接地址，下面两者是必须配套使用。
 
 ```c#
-DapperRepository dapperRepository = 
-new DapperRepository<object>(DBProvider.InterfaceDB)
+DapperHelper dapperHelper = 
+new DapperHelper<object>(DBProvider.InterfaceDB)
 ```
 
 ```xml
@@ -166,8 +166,8 @@ MESCon, InterfaceDB, MESLogCon, MESOtherCon
 
 ```C#
 string connectString = @"Data Source=127.0.0.1/ORCL;User ID=mesdb;Password=Cam1star";
-DapperRepository dapperRepository = 
-new DapperRepository<object>(connectString)
+DapperHelper dapperHelper = 
+new DapperHelper<object>(connectString)
 ```
 
 
@@ -179,7 +179,7 @@ new DapperRepository<object>(connectString)
 ​	查询数据并以DataTable对象返回
 
 ```c#
-DataTable dt = new DapperRepository<object>().Query_DataTable(sql);
+DataTable dt = new DapperHelper<object>().Query_DataTable(sql);
 ```
 
 ## 4.2 Query 
@@ -187,19 +187,19 @@ DataTable dt = new DapperRepository<object>().Query_DataTable(sql);
 ①查询数据返回具体实体对象
 
 ```c#
-Container dt = new DapperRepository<object>().Query<Container>(sql).FirstOrDefault();
+Container dt = new DapperHelper<object>().Query<Container>(sql).FirstOrDefault();
 ```
 
 ②查询数据返回具体实体对象集合（List）
 
 ```c#
-List<Container> dts = new DapperRepository<object>().Query<Container>(sql).ToList();
+List<Container> dts = new DapperHelper<object>().Query<Container>(sql).ToList();
 ```
 
 ③查询数据返回对象数组（Array）
 
 ```c#
-Container[] dts = new DapperRepository<object>().Query<Container>(sql).ToArray();
+Container[] dts = new DapperHelper<object>().Query<Container>(sql).ToArray();
 ```
 
 ## 4.3 Execute 
@@ -207,7 +207,7 @@ Container[] dts = new DapperRepository<object>().Query<Container>(sql).ToArray()
 ​		对数据库的Create、Update、Delete操作的SQL语句可以使用Execute方法执行。
 
 ```c#
-int executResult = new DapperRepository<object>().Execute(sql, null);
+int executResult = new DapperHelper<object>().Execute(sql, null);
 ```
 
 ## 4.4 BatchExecutionForeach 
@@ -222,7 +222,7 @@ string sql = @"Update CONTAINER C SET C.status = '1' WHERE C.CONTAINERNAME = '20
 string sql2 = @"Update CONTAINER C SET C.status = '1' WHERE C.CONTAINERNAME = '20230601002';";
 string sql3 = @"Update CONTAINER C SET C.status = '1' WHERE C.CONTAINERNAME = '20230601003';";
 List<string> SQLList = new List<string>() { sql , sql2, sql3};
-int executResult = new DapperRepository<object>().BatchExecutionForeach(SQLList);
+int executResult = new DapperHelper<object>().BatchExecutionForeach(SQLList);
 ```
 
 ## 4.5 BatchExecutionBeginEnd 
@@ -237,7 +237,7 @@ string sql = @"Update CONTAINER C SET C.status = '1' WHERE C.CONTAINERNAME = '20
 string sql2 = @"Update CONTAINER C SET C.status = '1' WHERE C.CONTAINERNAME = '20230601002';";
 string sql3 = @"Update CONTAINER C SET C.status = '1' WHERE C.CONTAINERNAME = '20230601003';";
 List<string> SQLList = new List<string>() { sql, sql2, sql3 };
-int executResult = new DapperRepository<object>().BatchExecutionBeginEnd(SQLList);
+int executResult = new DapperHelper<object>().BatchExecutionBeginEnd(SQLList);
 ```
 
 ## 4.6 ExecuteProcedure
@@ -251,7 +251,7 @@ string ProcedureName = "TEST01"; //存储过程名称
 DynamicParameters dynamicParameters = new DynamicParameters();//封装存储过程需要的参数
 dynamicParameters.Add("inputValue", 120, DbType.Int32);
 dynamicParameters.Add("outputVale", dbType:DbType.Int32, direction:ParameterDirection.Output);
-new DapperRepository<object>().ExecuteProcedure(ProcedureName, dynamicParameters);
+new DapperHelper<object>().ExecuteProcedure(ProcedureName, dynamicParameters);
 //获取 存储过程执行结果
 int executResult = dynamicParameters.Get<int>("outputVale");
 return executResult;
@@ -303,13 +303,13 @@ return executResult;
 
 ```c#
 string sql = @"SELECT C.CONTAINERNAME, C.STATUS FROM CONTAINER C WHERE C.CONTAINERNAME = :ContainerName";
-DataTable dt = new DapperRepository<object>().Query_DataTable(sql, new { ContainerName = "20230601001" });
+DataTable dt = new DapperHelper<object>().Query_DataTable(sql, new { ContainerName = "20230601001" });
 ```
 
 ```c#
 string sql = @"SELECT C.CONTAINERNAME, C.STATUS FROM CONTAINER C WHERE C.CONTAINERNAME = :ContainerName";
 string LOT = "20230601001";
-DataTable dt = new DapperRepository<object>().Query_DataTable(sql, new { ContainerName = LOT  });
+DataTable dt = new DapperHelper<object>().Query_DataTable(sql, new { ContainerName = LOT  });
 ```
 
 
@@ -321,13 +321,13 @@ DataTable dt = new DapperRepository<object>().Query_DataTable(sql, new { Contain
 ```c#
 string sql = @"SELECT C.CONTAINERNAME, C.STATUS FROM CONTAINER C WHERE C.CONTAINERNAME IN :ContainerNames";
 List<string> lots = new List<string>() { "20230601001", "20230601002" };
-DataTable dt = new DapperRepository<object>().Query_DataTable(sql, new { ContainerNames = lots });
+DataTable dt = new DapperHelper<object>().Query_DataTable(sql, new { ContainerNames = lots });
 ```
 
 ```c#
 string sql = @"SELECT C.CONTAINERNAME, C.STATUS FROM CONTAINER C WHERE C.CONTAINERNAME IN :ContainerNames";
 string[] lots = new string[] { "20230601001", "20230601002" };
-DataTable dt = new DapperRepository<object>().Query_DataTable(sql, new { ContainerNames = lots });
+DataTable dt = new DapperHelper<object>().Query_DataTable(sql, new { ContainerNames = lots });
 ```
 
 
@@ -339,13 +339,13 @@ DataTable dt = new DapperRepository<object>().Query_DataTable(sql, new { Contain
 ```c#
 string sql = @"SELECT C.CONTAINERNAME, C.STATUS FROM CONTAINER C WHERE C.CONTAINERNAME LIKE :ContainerName";
 string lot = "2023060100%";
-DataTable dt = new DapperRepository<object>().Query_DataTable(sql, new { ContainerName = lot });
+DataTable dt = new DapperHelper<object>().Query_DataTable(sql, new { ContainerName = lot });
 ```
 
 ```c#
 string sql = @"SELECT C.CONTAINERNAME, C.STATUS FROM CONTAINER C WHERE C.CONTAINERNAME LIKE :ContainerName";
 string lot = "%060100%";
-DataTable dt = new DapperRepository<object>().Query_DataTable(sql, new { ContainerName = lot });
+DataTable dt = new DapperHelper<object>().Query_DataTable(sql, new { ContainerName = lot });
 ```
 
 
