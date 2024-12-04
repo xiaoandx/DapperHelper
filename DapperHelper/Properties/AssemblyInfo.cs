@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("DapperHelper.Orcale")]
-[assembly: AssemblyDescription("DapperHelperdll is compatible with the Oracle database, while other databases are not compatible")]
+[assembly: AssemblyTitle("DapperHelper")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Individual developer WEI.ZHOU")]
-[assembly: AssemblyProduct("DapperHelper.Orcale")]
-[assembly: AssemblyCopyright("Copyright ©  2023-2024")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("DapperHelper")]
+[assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("49d05c28-a485-4686-83c0-2a0ed079a7fb")]
+[assembly: Guid("5f6993d9-f7aa-4e5a-a051-60a55e31d8d9")]
 
 // 程序集的版本信息由下列四个值组成: 
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 //可以指定所有这些值，也可以使用“生成号”和“修订号”的默认值
 //通过使用 "*"，如下所示:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.6.0.0")]
-[assembly: AssemblyFileVersion("1.6.0.0")]
+[assembly: AssemblyVersion("1.6.0.1")]
+[assembly: AssemblyFileVersion("1.6.0.1")]

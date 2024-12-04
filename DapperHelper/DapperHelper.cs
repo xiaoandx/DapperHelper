@@ -5,7 +5,10 @@ using DapperHelper.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using DapperHelper.Core.Models;
+using Newtonsoft.Json;
 
 namespace DapperHelper
 {
@@ -1876,6 +1879,360 @@ namespace DapperHelper
             {
                 Dispose();
             }
+        }
+        
+        /// <summary>
+        /// 批量执行 UserCommand
+        /// </summary>
+        /// <param name="commands"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public int Execute(UserCommands commands, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            if (commands.Count == 0)
+              return 0;
+
+            return Execute(commands.AsEnumerable(), commandTimeout, commandType);
+        }
+
+        /// <summary>
+        /// 批量执行 UserCommand
+        /// </summary>
+        /// <param name="commands"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        private int Execute(IEnumerable<UserCommand> commands, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            int executeCount = 0;
+
+            using (var trans = this.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var command in commands)
+                    {
+                        var commandTemp = command;
+                        // 提取SQL參數
+                        string commandText = commandTemp.CommandText;
+                        DynamicParameters tempParameters = null;
+
+                        #region Extract SQL parameters to DynamicParameters
+
+                        var parameterList = commandTemp.Parameters;
+                        if (parameterList.Count > 0)
+                        {
+                          tempParameters = new DynamicParameters();
+                            
+                            #region Detecting parameter missing transmission
+                            
+                            string tempCommandText = commandText.ToString();
+                            // 按照调用时传递的参数擦除当前SQL对应的参数栏位：如 Name=:Name 变成 Name=Name
+                            foreach (var item in parameterList)
+                            {
+                              tempCommandText = tempCommandText.Replace($":{item.Name}", item.Name);
+                            }
+
+                            // 检测擦除参数栏位之后，SQL里面是否还残留 “:”
+                            tempCommandText = tempCommandText.Replace(" ", "").ToUpper(); //去除空格
+                            if (tempCommandText.Contains("=:") || tempCommandText.Contains("IN:"))
+                            {
+                                throw new Exception("Parameterized SQL must upload all required parameters");
+                            }
+
+                            #endregion
+                        }
+
+                        foreach (var item in parameterList)
+                        {
+                            UserParameter val = item;
+                            object paramValue = null;
+
+                            // 判断参数是否枚举值
+                            bool isEnumerable = Type.GetType(val.ParamType)?.GetInterface("System.Collections.IEnumerable") != null;
+                            // 字符参数
+                            if (val.ParamType == "System.String") 
+                            {
+                                paramValue = string.IsNullOrEmpty(val.Value) ? null : val.Value;
+                                tempParameters?.Add(val.Name, paramValue);
+                            }
+                            else if (val.ParamType.ToUpper().Contains("DATE") && isEnumerable == false) 
+                            {   //日期参数
+                                paramValue = string.IsNullOrEmpty(val.Value) ? null : (DateTime?)DateTime.Parse(val.Value);
+                                tempParameters?.Add(val.Name, paramValue);
+                            }
+                            else if (isEnumerable == true) 
+                            {   // 枚举参数
+                                #region 处理枚举值 
+                                if (val.ParamType.ToUpper().Contains("STRING"))
+                                {
+                                  string[] avary = string.IsNullOrEmpty(val.Value) ? null : JsonConvert.DeserializeObject<string[]>(val.Value);
+                                  tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
+                                }
+                                else if (val.ParamType.ToUpper().Contains("DATE"))
+                                {
+                                    DateTime[] avary = string.IsNullOrEmpty(val.Value) ? null : JsonConvert.DeserializeObject<DateTime[]>(val.Value);
+                                    tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
+                                }
+                                else
+                                {
+                                    double[] avary = string.IsNullOrEmpty(val.Value) ? null : JsonConvert.DeserializeObject<double[]>(val.Value);
+                                    tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
+                                }
+                                #endregion
+
+                            }
+                            else 
+                            {   // 数字参数
+                                paramValue = string.IsNullOrEmpty(val.Value) ? null : (double?)double.Parse(val.Value);
+                                tempParameters?.Add(val.Name, paramValue);
+                            }
+
+                        }
+                        #endregion
+                        
+                        executeCount += Connection.Execute(commandText, tempParameters, trans, commandTimeout, commandType);
+                    }
+                    trans.Commit();
+                }
+                catch
+                {
+                    trans.Rollback();
+                    executeCount = 0;
+                    throw;
+                }
+                finally
+                {
+                  Dispose();
+                }
+            }
+            return executeCount;
+        }
+        
+        /// <summary>
+        /// 执行UserCommand
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public int Execute(UserCommand command, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            int executeCount = 0;
+            
+            if(command == null)
+              throw new Exception("UserCommand cannot be empty");
+            
+            OpenConnection(this.Connection);
+            
+            try
+            {
+                var commandTemp = command;
+                // 提取SQL參數
+                string commandText = commandTemp.CommandText;
+                DynamicParameters tempParameters = null;
+
+                #region Extract SQL parameters to DynamicParameters
+
+                var parameterList = commandTemp.Parameters;
+                if (parameterList.Count > 0)
+                {
+                  tempParameters = new DynamicParameters();
+                    
+                    #region Detecting parameter missing transmission
+                    
+                    string tempCommandText = commandText.ToString();
+                    // 按照调用时传递的参数擦除当前SQL对应的参数栏位：如 Name=:Name 变成 Name=Name
+                    foreach (var item in parameterList)
+                    {
+                      tempCommandText = tempCommandText.Replace($":{item.Name}", item.Name);
+                    }
+
+                    // 检测擦除参数栏位之后，SQL里面是否还残留 “:”
+                    tempCommandText = tempCommandText.Replace(" ", "").ToUpper(); //去除空格
+                    if (tempCommandText.Contains("=:") || tempCommandText.Contains("IN:"))
+                    {
+                        throw new Exception("Parameterized SQL must upload all required parameters");
+                    }
+
+                    #endregion
+                }
+
+                foreach (var item in parameterList)
+                {
+                    UserParameter val = item;
+                    object paramValue = null;
+
+                    // 判断参数是否枚举值
+                    bool isEnumerable = Type.GetType(val.ParamType)?.GetInterface("System.Collections.IEnumerable") != null;
+                    // 字符参数
+                    if (val.ParamType == "System.String") 
+                    {
+                        paramValue = string.IsNullOrEmpty(val.Value) ? null : val.Value;
+                        tempParameters?.Add(val.Name, paramValue);
+                    }
+                    else if (val.ParamType.ToUpper().Contains("DATE") && isEnumerable == false) 
+                    {   //日期参数
+                        paramValue = string.IsNullOrEmpty(val.Value) ? null : (DateTime?)DateTime.Parse(val.Value);
+                        tempParameters?.Add(val.Name, paramValue);
+                    }
+                    else if (isEnumerable == true) 
+                    {   // 枚举参数
+                        #region 处理枚举值 
+                        if (val.ParamType.ToUpper().Contains("STRING"))
+                        {
+                          string[] avary = string.IsNullOrEmpty(val.Value) ? null : JsonConvert.DeserializeObject<string[]>(val.Value);
+                          tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
+                        }
+                        else if (val.ParamType.ToUpper().Contains("DATE"))
+                        {
+                            DateTime[] avary = string.IsNullOrEmpty(val.Value) ? null : JsonConvert.DeserializeObject<DateTime[]>(val.Value);
+                            tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
+                        }
+                        else
+                        {
+                            double[] avary = string.IsNullOrEmpty(val.Value) ? null : JsonConvert.DeserializeObject<double[]>(val.Value);
+                            tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
+                        }
+                        #endregion
+
+                    }
+                    else 
+                    {   // 数字参数
+                        paramValue = string.IsNullOrEmpty(val.Value) ? null : (double?)double.Parse(val.Value);
+                        tempParameters?.Add(val.Name, paramValue);
+                    }
+
+                }
+                #endregion
+                
+                executeCount += Connection.Execute(commandText, tempParameters,null, commandTimeout, commandType);
+            }
+            catch
+            {
+                executeCount = 0;
+                throw;
+            }
+            finally
+            {
+              Dispose();
+            }
+            return executeCount;
+        }
+        
+        /// <summary>
+        /// 执行UserCommand
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<int> ExecuteAsync(UserCommand command, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            int executeCount = 0;
+            
+            if(command == null)
+              throw new Exception("UserCommand cannot be empty");
+
+            OpenConnection(this.Connection);
+            
+            try
+            {
+                var commandTemp = command;
+                // 提取SQL參數
+                string commandText = commandTemp.CommandText;
+                DynamicParameters tempParameters = null;
+
+                #region Extract SQL parameters to DynamicParameters
+
+                var parameterList = commandTemp.Parameters;
+                if (parameterList.Count > 0)
+                {
+                  tempParameters = new DynamicParameters();
+                    
+                    #region Detecting parameter missing transmission
+                    
+                    string tempCommandText = commandText.ToString();
+                    // 按照调用时传递的参数擦除当前SQL对应的参数栏位：如 Name=:Name 变成 Name=Name
+                    foreach (var item in parameterList)
+                    {
+                      tempCommandText = tempCommandText.Replace($":{item.Name}", item.Name);
+                    }
+
+                    // 检测擦除参数栏位之后，SQL里面是否还残留 “:”
+                    tempCommandText = tempCommandText.Replace(" ", "").ToUpper(); //去除空格
+                    if (tempCommandText.Contains("=:") || tempCommandText.Contains("IN:"))
+                    {
+                        throw new Exception("Parameterized SQL must upload all required parameters");
+                    }
+
+                    #endregion
+                }
+
+                foreach (var item in parameterList)
+                {
+                    UserParameter val = item;
+                    object paramValue = null;
+
+                    // 判断参数是否枚举值
+                    bool isEnumerable = Type.GetType(val.ParamType)?.GetInterface("System.Collections.IEnumerable") != null;
+                    // 字符参数
+                    if (val.ParamType == "System.String") 
+                    {
+                        paramValue = string.IsNullOrEmpty(val.Value) ? null : val.Value;
+                        tempParameters?.Add(val.Name, paramValue);
+                    }
+                    else if (val.ParamType.ToUpper().Contains("DATE") && isEnumerable == false) 
+                    {   //日期参数
+                        paramValue = string.IsNullOrEmpty(val.Value) ? null : (DateTime?)DateTime.Parse(val.Value);
+                        tempParameters?.Add(val.Name, paramValue);
+                    }
+                    else if (isEnumerable == true) 
+                    {   // 枚举参数
+                        #region 处理枚举值 
+                        if (val.ParamType.ToUpper().Contains("STRING"))
+                        {
+                          string[] avary = string.IsNullOrEmpty(val.Value) ? null : JsonConvert.DeserializeObject<string[]>(val.Value);
+                          tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
+                        }
+                        else if (val.ParamType.ToUpper().Contains("DATE"))
+                        {
+                            DateTime[] avary = string.IsNullOrEmpty(val.Value) ? null : JsonConvert.DeserializeObject<DateTime[]>(val.Value);
+                            tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
+                        }
+                        else
+                        {
+                            double[] avary = string.IsNullOrEmpty(val.Value) ? null : JsonConvert.DeserializeObject<double[]>(val.Value);
+                            tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
+                        }
+                        #endregion
+
+                    }
+                    else 
+                    {   // 数字参数
+                        paramValue = string.IsNullOrEmpty(val.Value) ? null : (double?)double.Parse(val.Value);
+                        tempParameters?.Add(val.Name, paramValue);
+                    }
+
+                }
+                #endregion
+                
+                executeCount = await Connection.ExecuteAsync(commandText, tempParameters, null, commandTimeout, commandType);
+            }
+            catch
+            {
+                executeCount = 0;
+                throw;
+            }
+            finally
+            {
+              Dispose();
+            }
+            return executeCount;
         }
 
         /// <summary>

@@ -103,6 +103,143 @@
             </summary>
             <param name="param"></param>
         </member>
+        <member name="T:DapperHelper.Core.Models.UserCommand">
+            <summary>
+            UserCommand
+            </summary>
+        </member>
+        <member name="P:DapperHelper.Core.Models.UserCommand.CommandText">
+            <summary>
+            执行SQL
+            </summary>
+        </member>
+        <member name="P:DapperHelper.Core.Models.UserCommand.Parameters">
+            <summary>
+            参数集合
+            </summary>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserCommand.#ctor(System.String)">
+            <summary>
+            构造函数
+            </summary>
+            <param name="commandText"></param>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserCommand.#ctor(System.String,System.Object)">
+            <summary>
+            构造函数
+            </summary>
+            <param name="commandText"></param>
+            <param name="userObjectParameter"></param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserCommand.SetParameter``1(System.String,``0,System.Object)">
+            <summary>
+            用於设置SQL参数, 提供方法实现逐个参数进行传参，可以传递列表参数
+            </summary>
+            <param name="name"></param>
+            <param name="value"></param>
+            <param name="defaultValue"></param>
+            <typeparam name="T"></typeparam>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="T:DapperHelper.Core.Models.UserCommands">
+            <summary>
+            命令集合
+            </summary>
+        </member>
+        <member name="F:DapperHelper.Core.Models.UserCommands.userCommands">
+            <summary>
+            命令集合
+            </summary>
+        </member>
+        <member name="P:DapperHelper.Core.Models.UserCommands.Count">
+            <summary>
+            userCommands 命令集合的个数
+            </summary>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserCommands.Add(System.String,System.Boolean)">
+            <summary>
+            添加一个SQL
+            </summary>
+            <param name="commandText"></param>
+            <param name="keepSemicolon">是否在SQL结束地方保留分号 ； </param>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserCommands.Add(DapperHelper.Core.Models.UserCommand,System.Boolean)">
+            <summary>
+            添加一个参数化SQL
+            </summary>
+            <param name="userCommand"></param>
+            <param name="keepSemicolon">是否在SQL结束地方保留分号 ； </param>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserCommands.AddRange(DapperHelper.Core.Models.UserCommands)">
+            <summary>
+            批量添加参数化SQL
+            </summary>
+            <param name="commands"></param>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserCommands.AsEnumerable">
+            <summary>
+            获取命令集合
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserCommands.CollectionToString">
+            <summary>
+            获取命令集合的字符串
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserCommands.Clear">
+            <summary>
+            清空命令集合
+            </summary>
+        </member>
+        <member name="T:DapperHelper.Core.Models.UserParameter">
+            <summary>
+            用户参数
+            </summary>
+        </member>
+        <member name="P:DapperHelper.Core.Models.UserParameter.Name">
+            <summary>
+            参数名
+            </summary>
+        </member>
+        <member name="P:DapperHelper.Core.Models.UserParameter.Value">
+            <summary>
+            参数值
+            </summary>
+        </member>
+        <member name="P:DapperHelper.Core.Models.UserParameter.IsEnumerable">
+            <summary>
+            是否是集合
+            </summary>
+        </member>
+        <member name="F:DapperHelper.Core.Models.UserParameter.paramType">
+            <summary>
+            参数类型
+            </summary>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserParameter.#ctor(System.Type,System.String,System.Object,System.Object)">
+            <summary>
+            构造函数
+            </summary>
+            <param name="type"></param>
+            <param name="name"></param>
+            <param name="value"></param>
+            <param name="defaultValue"></param>
+        </member>
+        <member name="M:DapperHelper.Core.Models.UserParameter.Load(DapperHelper.Core.Models.UserParameter)">
+            <summary>
+            加载
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="P:DapperHelper.Core.Models.UserParameter.ParamType">
+            <summary>
+            参数类型
+            </summary>
+        </member>
         <member name="T:DapperHelper.Core.Repositories.DBFactory">
             <summary>
             数据库连接工厂
@@ -1572,6 +1709,45 @@
             <param name="commandTimeout">执行的超时时间</param>
             <param name="commandType"></param>
             <returns></returns>
+        </member>
+        <member name="M:DapperHelper.DapperHelper`1.Execute(DapperHelper.Core.Models.UserCommands,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            批量执行 UserCommand
+            </summary>
+            <param name="commands"></param>
+            <param name="commandTimeout"></param>
+            <param name="commandType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DapperHelper.DapperHelper`1.Execute(System.Collections.Generic.IEnumerable{DapperHelper.Core.Models.UserCommand},System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            批量执行 UserCommand
+            </summary>
+            <param name="commands"></param>
+            <param name="commandTimeout"></param>
+            <param name="commandType"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:DapperHelper.DapperHelper`1.Execute(DapperHelper.Core.Models.UserCommand,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            执行UserCommand
+            </summary>
+            <param name="command"></param>
+            <param name="commandTimeout"></param>
+            <param name="commandType"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:DapperHelper.DapperHelper`1.ExecuteAsync(DapperHelper.Core.Models.UserCommand,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            执行UserCommand
+            </summary>
+            <param name="command"></param>
+            <param name="commandTimeout"></param>
+            <param name="commandType"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
         </member>
         <member name="M:DapperHelper.DapperHelper`1.Query(System.String,System.Object,System.Data.IDbTransaction,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
             <summary>
