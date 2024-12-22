@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace DapperHelper.Core.Models
+namespace DapperHelpers.Core.Models
 {
   /// <summary>
   /// 用户参数
@@ -12,22 +12,22 @@ namespace DapperHelper.Core.Models
     /// 参数名
     /// </summary>
     public string Name { get; set; }
-    
+
     /// <summary>
     /// 参数值
     /// </summary>
     public string Value { get; set; }
-    
+
     /// <summary>
     /// 是否是集合
     /// </summary>
     public bool IsEnumerable { get; set; }
-    
+
     /// <summary>
     /// 参数类型
     /// </summary>
     private string paramType;
-    
+
     /// <summary>
     /// 构造函数
     /// </summary>
@@ -47,7 +47,7 @@ namespace DapperHelper.Core.Models
       else
       {
         // 值是枚举类型
-        if (this.IsEnumerable) 
+        if (this.IsEnumerable)
         {
           this.Value = JsonConvert.SerializeObject(value);
           if (this.Value.Length == 2)
@@ -65,7 +65,7 @@ namespace DapperHelper.Core.Models
         }
       }
     }
-    
+
     /// <summary>
     /// 加载
     /// </summary>
@@ -76,7 +76,7 @@ namespace DapperHelper.Core.Models
       this.Name = obj.Name;
       this.Value = obj.Value;
     }
-    
+
     /// <summary>
     /// 参数类型
     /// </summary>
@@ -93,6 +93,7 @@ namespace DapperHelper.Core.Models
         {
           IsEnumerable = false;
         }
+
         paramType = value;
       }
     }

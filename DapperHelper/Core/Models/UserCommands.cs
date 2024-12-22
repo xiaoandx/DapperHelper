@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace DapperHelper.Core.Models
+namespace DapperHelpers.Core.Models
 {
   /// <summary>
   /// 命令集合
@@ -16,7 +16,10 @@ namespace DapperHelper.Core.Models
     /// <summary>
     /// userCommands 命令集合的个数
     /// </summary>
-    public int Count { get { return userCommands.Count; } }
+    public int Count
+    {
+      get { return userCommands.Count; }
+    }
 
     /// <summary>
     /// 添加一个SQL
@@ -44,6 +47,7 @@ namespace DapperHelper.Core.Models
       {
         userCommand.CommandText = userCommand.CommandText.Trim().Trim(';');
       }
+
       userCommands.Add(userCommand);
     }
 
@@ -67,7 +71,7 @@ namespace DapperHelper.Core.Models
         yield return userCommand;
       }
     }
-    
+
     /// <summary>
     /// 获取命令集合的字符串
     /// </summary>
@@ -80,9 +84,10 @@ namespace DapperHelper.Core.Models
       {
         sbSqLs.Append(userCommand.CommandText + ";");
       }
+
       return sbSqLs.ToString();
     }
-    
+
     /// <summary>
     /// 清空命令集合
     /// </summary>
