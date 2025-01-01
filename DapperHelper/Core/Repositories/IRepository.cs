@@ -11,7 +11,7 @@ namespace DapperHelpers.Core.Repositories
   /// </summary>
   /// <remarks>
   /// Author：Willis
-  /// <para>Version: v1.6.0.0</para>
+  /// <para>Version: v1.6.0.1</para>
   /// </remarks>
   /// <typeparam name="TEntity"></typeparam>
   public interface IRepository<TEntity> where TEntity : class, new()

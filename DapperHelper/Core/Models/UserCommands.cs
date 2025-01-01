@@ -6,6 +6,10 @@ namespace DapperHelpers.Core.Models
   /// <summary>
   /// 命令集合
   /// </summary>
+  /// <remarks>
+  /// Author：Willis
+  /// <para>Version: v1.6.0.1</para>
+  /// </remarks>
   public class UserCommands
   {
     /// <summary>

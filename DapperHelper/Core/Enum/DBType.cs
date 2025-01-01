@@ -5,7 +5,7 @@
   /// </summary>
   /// <remarks>
   /// Author：Willis
-  /// <para>Version: v1.6.0.0</para>
+  /// <para>Version: v1.6.0.1</para>
   /// </remarks>
   public enum DBType
   {
@@ -32,6 +32,17 @@
     /// <summary>
     /// MySql
     /// </summary>
-    MySql
+    MySql,
+
+    /// <summary>
+    /// Sqlite
+    /// </summary>
+    Sqlite,
+
+    /// <summary>
+    /// PostgreSql
+    /// </summary>
+    PostgreSql
+
   }
 }

@@ -1,3 +1,8 @@
+V1.6.0.1
+1.数据效能优化，修改IDbConnectio的打开关闭，避免长时间占用数据库连接，导致DBA连接数过多
+2.添加对常用数据库的支持（Sql Service、Oracle、OleDb、MySQL、PostgreSQL、SQLite、Odbc...）没有指定DbType时，默认使用Oracle
+3.调整类库包结构，优化类库包的引用
+
 V1.6.0.0
 説明：V1.6.0.0 為新架構，不在兼容 V1.5.2.0版本以下的版本
 1. 調整項目核心架構

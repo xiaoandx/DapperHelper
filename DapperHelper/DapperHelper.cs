@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
+using DapperHelpers.Core.Enum;
 using DapperHelpers.Core.Extensions;
 using DapperHelpers.Core.Repositories;
 using System;
@@ -12,17 +13,17 @@ using Newtonsoft.Json;
 namespace DapperHelpers
 {
   /// <summary>
-  /// Dapper数据操作基类 v1.6.0.0
+  /// Dapper数据操作基类 v1.6.0.1
   /// </summary>
   /// <remarks>
   /// Author：Willis
-  /// <para>Version: v1.6.0.0</para>
+  /// <para>Version: v1.6.0.1</para>
   /// </remarks>
   /// <typeparam name="TEntity">仓储实体</typeparam>
   public class DapperHelper<TEntity> : IRepository<TEntity> where TEntity : class, new()
   {
     /// <summary>
-    /// 默认连接对象进行创建Connection对象
+    /// 默认连接对象进行创建Oracle的Connection对象,默认使用<see cref="DBType"/>下面的MESCon作为连接配置
     /// </summary>
     public DapperHelper()
     {
@@ -30,7 +31,7 @@ namespace DapperHelpers
     }
 
     /// <summary>
-    /// 指定DBProvider进行创建Connection对象
+    /// 指定DBProvider进行创建Oracle的Connection对象
     /// <para>
     /// DBProvider(MESCon,InterfaceDB,MESLogCon,MESOtherCon)
     /// </para>
@@ -60,12 +61,31 @@ namespace DapperHelpers
     }
 
     /// <summary>
+    /// 数据库类型 <see cref="DBType"/>指定<see cref="DBProvider"/> 进行创建Connection对象 
+    /// </summary>
+    /// <param name="dbType"></param>
+    /// <param name="providers"></param>
+    public DapperHelper(DBType dbType, DBProvider providers)
+    {
+      this.Connection = DBFactory.CreateConnection(dbType, providers);
+    }
+
+    /// <summary>
+    /// 数据库类型 <see cref="DBType"/>指定数据库链接地址settingConnectionString进行创建Connection对象
+    /// </summary>
+    /// <param name="dbType"></param>
+    /// <param name="settingConnectionString"></param>
+    public DapperHelper(DBType dbType, string settingConnectionString)
+    {
+      this.Connection = DBFactory.CreateConnection(dbType, settingConnectionString);
+    }
+
+    /// <summary>
     /// DB Connection
     /// </summary>
     public IDbConnection Connection { get; private set; }
 
     #region Connection基础操作
-
     /// <summary>
     /// 打开数据库连接,如果关闭或者连接中断,则打开连接
     /// </summary>
@@ -136,7 +156,6 @@ namespace DapperHelpers
     {
       return this.Connection.CreateCommand();
     }
-
     #endregion
 
     /// <summary>
@@ -2090,14 +2109,12 @@ namespace DapperHelpers
             DynamicParameters tempParameters = null;
 
             #region Extract SQL parameters to DynamicParameters
-
             var parameterList = commandTemp.Parameters;
             if (parameterList.Count > 0)
             {
               tempParameters = new DynamicParameters();
 
               #region Detecting parameter missing transmission
-
               string tempCommandText = commandText.ToString();
               // 按照调用时传递的参数擦除当前SQL对应的参数栏位：如 Name=:Name 变成 Name=Name
               foreach (var item in parameterList)
@@ -2111,7 +2128,6 @@ namespace DapperHelpers
               {
                 throw new Exception("Parameterized SQL must upload all required parameters");
               }
-
               #endregion
             }
 
@@ -2139,7 +2155,6 @@ namespace DapperHelpers
                 // 枚举参数
 
                 #region 处理枚举值
-
                 if (val.ParamType.ToUpper().Contains("STRING"))
                 {
                   string[] avary = string.IsNullOrEmpty(val.Value)
@@ -2161,7 +2176,6 @@ namespace DapperHelpers
                     : JsonConvert.DeserializeObject<double[]>(val.Value);
                   tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
                 }
-
                 #endregion
               }
               else
@@ -2171,7 +2185,6 @@ namespace DapperHelpers
                 tempParameters?.Add(val.Name, paramValue);
               }
             }
-
             #endregion
 
             executeCount += Connection.Execute(commandText, tempParameters, trans, commandTimeout, commandType);
@@ -2219,14 +2232,12 @@ namespace DapperHelpers
         DynamicParameters tempParameters = null;
 
         #region Extract SQL parameters to DynamicParameters
-
         var parameterList = commandTemp.Parameters;
         if (parameterList.Count > 0)
         {
           tempParameters = new DynamicParameters();
 
           #region Detecting parameter missing transmission
-
           string tempCommandText = commandText.ToString();
           // 按照调用时传递的参数擦除当前SQL对应的参数栏位：如 Name=:Name 变成 Name=Name
           foreach (var item in parameterList)
@@ -2240,7 +2251,6 @@ namespace DapperHelpers
           {
             throw new Exception("Parameterized SQL must upload all required parameters");
           }
-
           #endregion
         }
 
@@ -2268,7 +2278,6 @@ namespace DapperHelpers
             // 枚举参数
 
             #region 处理枚举值
-
             if (val.ParamType.ToUpper().Contains("STRING"))
             {
               string[] avary = string.IsNullOrEmpty(val.Value)
@@ -2290,7 +2299,6 @@ namespace DapperHelpers
                 : JsonConvert.DeserializeObject<double[]>(val.Value);
               tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
             }
-
             #endregion
           }
           else
@@ -2300,7 +2308,6 @@ namespace DapperHelpers
             tempParameters?.Add(val.Name, paramValue);
           }
         }
-
         #endregion
 
         executeCount += Connection.Execute(commandText, tempParameters, null, commandTimeout, commandType);
@@ -2344,14 +2351,12 @@ namespace DapperHelpers
         DynamicParameters tempParameters = null;
 
         #region Extract SQL parameters to DynamicParameters
-
         var parameterList = commandTemp.Parameters;
         if (parameterList.Count > 0)
         {
           tempParameters = new DynamicParameters();
 
           #region Detecting parameter missing transmission
-
           string tempCommandText = commandText.ToString();
           // 按照调用时传递的参数擦除当前SQL对应的参数栏位：如 Name=:Name 变成 Name=Name
           foreach (var item in parameterList)
@@ -2365,7 +2370,6 @@ namespace DapperHelpers
           {
             throw new Exception("Parameterized SQL must upload all required parameters");
           }
-
           #endregion
         }
 
@@ -2393,7 +2397,6 @@ namespace DapperHelpers
             // 枚举参数
 
             #region 处理枚举值
-
             if (val.ParamType.ToUpper().Contains("STRING"))
             {
               string[] avary = string.IsNullOrEmpty(val.Value)
@@ -2415,7 +2418,6 @@ namespace DapperHelpers
                 : JsonConvert.DeserializeObject<double[]>(val.Value);
               tempParameters?.AddDynamicParams(new { IsEnumerableParameter = avary });
             }
-
             #endregion
           }
           else
@@ -2425,7 +2427,6 @@ namespace DapperHelpers
             tempParameters?.Add(val.Name, paramValue);
           }
         }
-
         #endregion
 
         executeCount = await Connection.ExecuteAsync(commandText, tempParameters, null, commandTimeout, commandType);
